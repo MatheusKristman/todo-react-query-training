@@ -9,6 +9,8 @@ import { Button } from "./ui/button";
 export const AuthButton = () => {
   const { data: session } = useSession();
 
+  console.log(session);
+
   if (session) {
     return (
       <Button

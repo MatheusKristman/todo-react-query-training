@@ -3,6 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 import { loginSchema } from "@/constants/schemas/login-schema";
 import { Button } from "@/components/ui/button";
@@ -17,6 +20,15 @@ import {
 } from "@/components/ui/form";
 
 export const LoginForm = () => {
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session) {
+      router.replace("/");
+    }
+  }, [router, session]);
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -26,7 +38,11 @@ export const LoginForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
+    signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL_DEV}/`,
+    });
   }
 
   return (
@@ -57,7 +73,11 @@ export const LoginForm = () => {
               <FormItem>
                 <FormLabel className="text-lg font-medium">Senha</FormLabel>
                 <FormControl>
-                  <Input placeholder="Digite sua senha" {...field} />
+                  <Input
+                    type="password"
+                    placeholder="Digite sua senha"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

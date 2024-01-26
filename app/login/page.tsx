@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { FaGoogle } from "react-icons/fa";
 
 import { LoginForm } from "./components/login-form";
-import { Button } from "@/components/ui/button";
+import { GoogleLoginButton } from "./components/google-login-button";
 
 const LoginPage = () => {
   return (
@@ -10,12 +9,7 @@ const LoginPage = () => {
       <div className="w-full h-fit max-w-lg border border-white-primary rounded-3xl p-6">
         <h1 className="text-2xl font-bold mb-6">Entre na sua conta</h1>
 
-        <Button
-          variant="secondary"
-          className="w-full flex items-center justify-center text-lg gap-x-2 mb-6"
-        >
-          <FaGoogle /> Entrar pelo Google
-        </Button>
+        <GoogleLoginButton />
 
         <div className="relative w-full flex items-center justify-center before:content-[''] before:absolute before:top-1/2 before:left-0 before:right-0 before:-translate-y-1/2 before:w-full before:h-[1px] before:bg-white-primary/50">
           <span className="block text-lg font-medium text-white-primary bg-gray-primary z-10 px-2">
