@@ -15,8 +15,35 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Plus } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { createTodo } from "@/lib/query-functions/create-todo";
 
-export const TodoForm = () => {
+interface TodoFormProps {
+  isTodoPending: boolean;
+}
+
+export const TodoForm = ({ isTodoPending }: TodoFormProps) => {
+  const mutationKey: string[] = [];
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending, error } = useMutation({
+    mutationKey,
+    mutationFn: createTodo,
+    onSuccess: (data) => {
+      console.log(data);
+
+      queryClient.setQueryData(["todos"], data);
+      toast.success("Tarefa criada com sucesso.");
+      form.reset();
+    },
+    onError: (error) => {
+      console.log(error);
+
+      toast.error("Ocorreu um erro ao criar uma nova tarefa.");
+    },
+  });
+
   const form = useForm<z.infer<typeof todoSchema>>({
     resolver: zodResolver(todoSchema),
     defaultValues: {
@@ -25,7 +52,7 @@ export const TodoForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof todoSchema>) {
-    console.log(values);
+    mutate(values);
   }
 
   return (
@@ -40,7 +67,11 @@ export const TodoForm = () => {
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <Input placeholder="Digite sua tarefa..." {...field} />
+                <Input
+                  placeholder="Digite sua tarefa..."
+                  disabled={isTodoPending}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -48,6 +79,7 @@ export const TodoForm = () => {
         />
 
         <Button
+          disabled={isTodoPending}
           type="submit"
           className="w-fit text-base font-semibold rounded-full px-2 group"
         >
