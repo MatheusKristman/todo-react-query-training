@@ -24,15 +24,11 @@ interface TodoFormProps {
 }
 
 export const TodoForm = ({ isTodoPending }: TodoFormProps) => {
-  const mutationKey: string[] = [];
   const queryClient = useQueryClient();
 
   const { mutate, isPending, error } = useMutation({
-    mutationKey,
     mutationFn: createTodo,
     onSuccess: (data) => {
-      console.log(data);
-
       queryClient.setQueryData(["todos"], data);
       toast.success("Tarefa criada com sucesso.");
       form.reset();
@@ -69,7 +65,7 @@ export const TodoForm = ({ isTodoPending }: TodoFormProps) => {
               <FormControl>
                 <Input
                   placeholder="Digite sua tarefa..."
-                  disabled={isTodoPending}
+                  disabled={isTodoPending || isPending}
                   {...field}
                 />
               </FormControl>
@@ -79,7 +75,7 @@ export const TodoForm = ({ isTodoPending }: TodoFormProps) => {
         />
 
         <Button
-          disabled={isTodoPending}
+          disabled={isTodoPending || isPending}
           type="submit"
           className="w-fit text-base font-semibold rounded-full px-2 group"
         >

@@ -8,8 +8,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { name, email, password, confirmPassword } = await body;
 
-    console.log(confirmPassword);
-
     if (!name || !email || !password || !confirmPassword) {
       return new NextResponse("Dados inválidos, verifique e tente novamente", {
         status: 401,
